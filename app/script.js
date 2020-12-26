@@ -1,5 +1,5 @@
 let firework;
-let tailDot;
+let dots;
 let initCoords;
 
 const HEIGHT = 800;
@@ -10,14 +10,30 @@ function setup() {
   setFrameRate(30);
   initCoords = createVector(0, HEIGHT / 2);
   firework = new Firework(initCoords.x, initCoords.y);
-  tailDot = new TailDot(initCoords.x, initCoords.y + 50);
+  dots = createDots(10);
 }
 
 function draw() {
   background(220);
-  initCoords.y = initCoords.y - 1;
+  initCoords.y = initCoords.y - 2;
   firework.display(initCoords.y, -300);
-  tailDot.display(initCoords.y + 50, -300);
+  displayDots(dots, -300);
+}
+
+function createDots(nDots) {
+  let offset = 50;
+  let dots = [];
+  for (let i = 0; i < nDots; i++) {
+    dots.push(new TailDot(initCoords.x, initCoords.y + offset));
+    offset += 50;
+  }
+  return dots;
+}
+
+function displayDots(dots, limitPosY) {
+  dots.forEach((dot) => {
+    dot.display(initCoords.y, limitPosY);
+  });
 }
 
 class Firework {
@@ -37,7 +53,7 @@ class Firework {
   }
 
   display(newPosY, limitPosY) {
-    if (newPosY <= initCoords.y && newPosY > limitPosY) {
+    if (newPosY > limitPosY) {
       fill(237, 34, 93);
       noStroke();
       beginShape();
@@ -56,7 +72,9 @@ class TailDot {
   }
 
   display(newPosY, limitPosY) {
-    if (newPosY <= initCoords.y + 50 && newPosY > limitPosY) {
+    if (newPosY > limitPosY) {
+      console.log("OK");
+      console.log("X: ", this.posX, "Y: ", this.posY);
       strokeWeight(5);
       stroke("red");
       point(this.posX, newPosY);
