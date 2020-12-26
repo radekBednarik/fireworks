@@ -1,30 +1,32 @@
 let firework;
 let dots;
-let initCoords;
+let coords;
 
 const HEIGHT = 800;
 const WIDTH = 800;
+const SPEED = 2;
+const VLIMIT = -300;
 
 function setup() {
   createCanvas(WIDTH, HEIGHT, WEBGL);
   setFrameRate(30);
-  initCoords = createVector(0, HEIGHT / 2);
-  firework = new Firework(initCoords.x, initCoords.y);
-  dots = createDots(10);
+  coords = createVector(0, HEIGHT / 2);
+  firework = new Firework(coords.x, coords.y);
+  dots = createDots(11);
 }
 
 function draw() {
   background(220);
-  initCoords.y = initCoords.y - 2;
-  firework.display(initCoords.y, -300);
-  displayDots(dots, -300);
+  coords.y = coords.y - SPEED;
+  firework.display(coords.y, VLIMIT);
+  displayDots(dots, VLIMIT);
 }
 
 function createDots(nDots) {
   let offset = 50;
   let dots = [];
   for (let i = 0; i < nDots; i++) {
-    dots.push(new TailDot(initCoords.x, initCoords.y + offset));
+    dots.push(new TailDot(coords.x, coords.y + offset * 0.1 * i));
     offset += 50;
   }
   return dots;
@@ -32,7 +34,8 @@ function createDots(nDots) {
 
 function displayDots(dots, limitPosY) {
   dots.forEach((dot) => {
-    dot.display(initCoords.y, limitPosY);
+    dot.posY = dot.posY - SPEED;
+    dot.display(dot.posY, limitPosY);
   });
 }
 
@@ -73,8 +76,6 @@ class TailDot {
 
   display(newPosY, limitPosY) {
     if (newPosY > limitPosY) {
-      console.log("OK");
-      console.log("X: ", this.posX, "Y: ", this.posY);
       strokeWeight(5);
       stroke("red");
       point(this.posX, newPosY);
