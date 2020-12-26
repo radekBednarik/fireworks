@@ -2,10 +2,13 @@ let firework;
 let tailDot;
 let initCoords;
 
+const HEIGHT = 800;
+const WIDTH = 800;
+
 function setup() {
-  createCanvas(800, 800, WEBGL);
+  createCanvas(WIDTH, HEIGHT, WEBGL);
   setFrameRate(30);
-  initCoords = createVector(0, 0);
+  initCoords = createVector(0, HEIGHT / 2);
   firework = new Firework(initCoords.x, initCoords.y);
   tailDot = new TailDot(initCoords.x, initCoords.y + 50);
 }
@@ -13,8 +16,8 @@ function setup() {
 function draw() {
   background(220);
   initCoords.y = initCoords.y - 1;
-  firework.display(initCoords.y);
-  tailDot.display(initCoords.y + 50);
+  firework.display(initCoords.y, -300);
+  tailDot.display(initCoords.y + 50, -300);
 }
 
 class Firework {
@@ -33,14 +36,16 @@ class Firework {
     ];
   }
 
-  display(newPosY) {
-    fill(237, 34, 93);
-    noStroke();
-    beginShape();
-    this.coordinates.forEach((item) => {
-      vertex(this.posX + item[0], newPosY + item[1]);
-    });
-    endShape();
+  display(newPosY, limitPosY) {
+    if (newPosY <= initCoords.y && newPosY > limitPosY) {
+      fill(237, 34, 93);
+      noStroke();
+      beginShape();
+      this.coordinates.forEach((item) => {
+        vertex(this.posX + item[0], newPosY + item[1]);
+      });
+      endShape();
+    }
   }
 }
 
@@ -50,9 +55,11 @@ class TailDot {
     this.posY = posY;
   }
 
-  display(newPosY) {
-    strokeWeight(5);
-    stroke("red");
-    point(this.posX, newPosY);
+  display(newPosY, limitPosY) {
+    if (newPosY <= initCoords.y + 50 && newPosY > limitPosY) {
+      strokeWeight(5);
+      stroke("red");
+      point(this.posX, newPosY);
+    }
   }
 }
