@@ -3,18 +3,16 @@ let dots;
 let explosion;
 let coords;
 
-const HEIGHT = 800;
-const WIDTH = 800;
 const SPEED = 2;
-const VLIMIT = -300;
+const VLIMIT = 0;
 
 function setup() {
-  createCanvas(WIDTH, HEIGHT, WEBGL);
+  createCanvas(displayWidth, displayHeight, WEBGL);
   setFrameRate(30);
-  coords = createVector(0, HEIGHT / 2);
+  coords = createVector(0, displayWidth / 2);
   firework = new Firework(coords.x, coords.y);
   dots = createDots(11);
-  explosion = new Explosion(coords.x, coords.y);
+  explosion = new Explosion(coords.x, coords.y, 255);
 }
 
 function draw() {
@@ -22,7 +20,7 @@ function draw() {
   coords.y = coords.y - SPEED;
   firework.display(coords.y, VLIMIT);
   displayDots(dots, VLIMIT);
-  coords.y <= VLIMIT && explosion.display(VLIMIT, 5, 1);
+  coords.y <= VLIMIT && explosion.display(VLIMIT, 5, 1, 4);
 }
 
 function createDots(nDots) {
@@ -87,7 +85,7 @@ class TailDot {
 }
 
 class Explosion {
-  constructor(posX, posY) {
+  constructor(posX, posY, alpha) {
     this.posX = posX;
     this.posY = posY;
     this.coordinates = [
@@ -97,11 +95,13 @@ class Explosion {
       [0, 30],
       [30, 0],
     ];
+    this.alpha = alpha;
   }
 
-  display(newPosY, basicSpreadDist, spreadMod) {
-    stroke("red");
-    noFill();
+  display(newPosY, basicSpreadDist, spreadMod, alphaRed) {
+    let c = color(255, 0, 0, this.alpha);
+    stroke(c);
+    fill(c);
     beginShape();
     this.coordinates.forEach((item) => {
       // update coords. need to account for neg/pos values
@@ -114,5 +114,6 @@ class Explosion {
       vertex(this.posX + item[0], newPosY + item[1]);
     });
     endShape();
+    this.alpha > 0 ? (this.alpha = this.alpha - alphaRed) : (this.alpha = 0);
   }
 }
