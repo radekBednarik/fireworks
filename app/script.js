@@ -6,7 +6,7 @@ let coords;
 const HEIGHT = 800;
 const WIDTH = 800;
 const SPEED = 2;
-const VLIMIT = -10;
+const VLIMIT = -300;
 
 function setup() {
   createCanvas(WIDTH, HEIGHT, WEBGL);
@@ -22,7 +22,7 @@ function draw() {
   coords.y = coords.y - SPEED;
   firework.display(coords.y, VLIMIT);
   displayDots(dots, VLIMIT);
-  coords.y <= VLIMIT && explosion.display(VLIMIT, 10, 1);
+  coords.y <= VLIMIT && explosion.display(VLIMIT, 5, 1);
 }
 
 function createDots(nDots) {
@@ -103,7 +103,6 @@ class Explosion {
     stroke("red");
     noFill();
     beginShape();
-
     this.coordinates.forEach((item) => {
       // update coords. need to account for neg/pos values
       if (item.indexOf(0) != -1) {
