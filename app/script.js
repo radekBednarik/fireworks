@@ -1,5 +1,6 @@
 let firework;
 let dots;
+let explosion;
 let coords;
 
 const HEIGHT = 800;
@@ -13,6 +14,7 @@ function setup() {
   coords = createVector(0, HEIGHT / 2);
   firework = new Firework(coords.x, coords.y);
   dots = createDots(11);
+  explosion = new Explosion(coords.x, coords.y);
 }
 
 function draw() {
@@ -20,6 +22,7 @@ function draw() {
   coords.y = coords.y - SPEED;
   firework.display(coords.y, VLIMIT);
   displayDots(dots, VLIMIT);
+  coords.y <= VLIMIT && explosion.display(VLIMIT, 10);
 }
 
 function createDots(nDots) {
@@ -80,5 +83,29 @@ class TailDot {
       stroke("red");
       point(this.posX, newPosY);
     }
+  }
+}
+
+class Explosion {
+  constructor(posX, posY) {
+    this.posX = posX;
+    this.posY = posY;
+    this.coordinates = [
+      [30, 0],
+      [0, -30],
+      [-30, 0],
+      [0, 30],
+      [30, 0],
+    ];
+  }
+
+  display(newPosY, maxNoSpread) {
+    stroke("red");
+    noFill();
+    beginShape();
+    this.coordinates.forEach((item) => {
+      vertex(this.posX + item[0], newPosY + item[1]);
+    });
+    endShape();
   }
 }
