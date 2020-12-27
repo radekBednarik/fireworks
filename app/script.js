@@ -6,7 +6,7 @@ let coords;
 const HEIGHT = 800;
 const WIDTH = 800;
 const SPEED = 2;
-const VLIMIT = -300;
+const VLIMIT = -10;
 
 function setup() {
   createCanvas(WIDTH, HEIGHT, WEBGL);
@@ -22,7 +22,7 @@ function draw() {
   coords.y = coords.y - SPEED;
   firework.display(coords.y, VLIMIT);
   displayDots(dots, VLIMIT);
-  coords.y <= VLIMIT && explosion.display(VLIMIT, 10, 1.1);
+  coords.y <= VLIMIT && explosion.display(VLIMIT, 10, 1);
 }
 
 function createDots(nDots) {
@@ -104,22 +104,16 @@ class Explosion {
     noFill();
     beginShape();
 
-    for (let i = 0; i < this.coordinates.length; i++) {
-      if (i % 2 == 0) {
-        vertex(
-          this.posX + this.coordinates[i][0] + basicSpreadDist * spreadMod,
-          newPosY + this.coordinates[i][1]
-        );
-      } else {
-        vertex(
-          this.posX + this.coordinates[i][0],
-          newPosY + this.coordinates[i][1] + basicSpreadDist * spreadMod
-        );
+    this.coordinates.forEach((item) => {
+      // update coords. need to account for neg/pos values
+      if (item.indexOf(0) != -1) {
+        item[0] < 0 && (item[0] = item[0] - basicSpreadDist * spreadMod);
+        item[0] > 0 && (item[0] = item[0] + basicSpreadDist * spreadMod);
+        item[1] < 0 && (item[1] = item[1] - basicSpreadDist * spreadMod);
+        item[1] > 0 && (item[1] = item[1] + basicSpreadDist * spreadMod);
       }
-    }
-    // this.coordinates.forEach((item) => {
-    //   vertex(this.posX + item[0], newPosY + item[1]);
-    // });
+      vertex(this.posX + item[0], newPosY + item[1]);
+    });
     endShape();
   }
 }
