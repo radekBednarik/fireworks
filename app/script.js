@@ -22,7 +22,7 @@ function draw() {
   coords.y = coords.y - SPEED;
   firework.display(coords.y, VLIMIT);
   displayDots(dots, VLIMIT);
-  coords.y <= VLIMIT && explosion.display(VLIMIT, 10);
+  coords.y <= VLIMIT && explosion.display(VLIMIT, 10, 1.1);
 }
 
 function createDots(nDots) {
@@ -99,13 +99,27 @@ class Explosion {
     ];
   }
 
-  display(newPosY, maxNoSpread) {
+  display(newPosY, basicSpreadDist, spreadMod) {
     stroke("red");
     noFill();
     beginShape();
-    this.coordinates.forEach((item) => {
-      vertex(this.posX + item[0], newPosY + item[1]);
-    });
+
+    for (let i = 0; i < this.coordinates.length; i++) {
+      if (i % 2 == 0) {
+        vertex(
+          this.posX + this.coordinates[i][0] + basicSpreadDist * spreadMod,
+          newPosY + this.coordinates[i][1]
+        );
+      } else {
+        vertex(
+          this.posX + this.coordinates[i][0],
+          newPosY + this.coordinates[i][1] + basicSpreadDist * spreadMod
+        );
+      }
+    }
+    // this.coordinates.forEach((item) => {
+    //   vertex(this.posX + item[0], newPosY + item[1]);
+    // });
     endShape();
   }
 }
