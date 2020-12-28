@@ -5,13 +5,15 @@ let coords;
 
 const SPEED = 2;
 const VLIMIT = 0;
+const CWIDTH = 1100;
+const CHEIGHT = 900;
 
 function setup() {
-  createCanvas(displayWidth, displayHeight, WEBGL);
+  createCanvas(CWIDTH, CHEIGHT, WEBGL);
   setFrameRate(30);
-  coords = createVector(0, displayWidth / 2);
+  coords = createVector(0, CHEIGHT / 2);
   firework = new Firework(coords.x, coords.y);
-  dots = createDots(11);
+  dots = createDots(11, 50);
   explosion = new Explosion(coords.x, coords.y, 255);
 }
 
@@ -23,12 +25,12 @@ function draw() {
   coords.y <= VLIMIT && explosion.display(VLIMIT, 5, 1, 4);
 }
 
-function createDots(nDots) {
-  let offset = 50;
+function createDots(nDots, offSet) {
+  let offset = offSet;
   let dots = [];
   for (let i = 0; i < nDots; i++) {
-    dots.push(new TailDot(coords.x, coords.y + offset * 0.1 * i));
-    offset += 50;
+    dots.push(new TailDot(coords.x, coords.y + offset));
+    offset += offSet;
   }
   return dots;
 }
