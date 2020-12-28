@@ -1,10 +1,7 @@
-let firework;
 let fireworks;
 let fireworksDots;
 let explosions;
 let coordsArray;
-let dots;
-let explosion;
 let coords;
 
 const SPEED = 2;
