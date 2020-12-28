@@ -9,6 +9,11 @@ const VLIMIT = 0;
 const CWIDTH = 1100;
 const CHEIGHT = 900;
 const STARTHEIGHT = CHEIGHT / 2;
+const COLOURS = [
+  [255, 0, 0],
+  [0, 0, 255],
+  [0, 255, 0],
+];
 
 function setup() {
   createCanvas(CWIDTH, CHEIGHT, WEBGL);
@@ -93,10 +98,18 @@ function fire(coordsY, coordsArray) {
   }
 }
 
+function selectRandomColour(colours) {
+  const min = 0;
+  const max = colours.length;
+  const index = Math.floor(Math.random() * (max - min) + min);
+  return colours[index];
+}
+
 class Firework {
   constructor(posX, posY) {
     this.posX = posX;
     this.posY = posY;
+    this.colour = selectRandomColour(COLOURS);
     this.coordinates = [
       [-10, 10],
       [0, 35],
@@ -111,7 +124,7 @@ class Firework {
 
   display(newPosY, limitPosY) {
     if (newPosY > limitPosY) {
-      fill(237, 34, 93);
+      fill(color(this.colour[0], this.colour[1], this.colour[2]));
       noStroke();
       beginShape();
       this.coordinates.forEach((item) => {
@@ -126,12 +139,13 @@ class TailDot {
   constructor(posX, posY) {
     this.posX = posX;
     this.posY = posY;
+    this.colour = selectRandomColour(COLOURS);
   }
 
   display(newPosY, limitPosY) {
     if (newPosY > limitPosY) {
       strokeWeight(5);
-      stroke("red");
+      stroke(color(this.colour[0], this.colour[1], this.colour[2]));
       point(this.posX, newPosY);
     }
   }
@@ -149,10 +163,11 @@ class Explosion {
       [30, 0],
     ];
     this.alpha = alpha;
+    this.colour = selectRandomColour(COLOURS);
   }
 
   display(newPosY, basicSpreadDist, spreadMod, alphaRed) {
-    let c = color(255, 0, 0, this.alpha);
+    let c = color(this.colour[0], this.colour[1], this.colour[2], this.alpha);
     stroke(c);
     fill(c);
     beginShape();
