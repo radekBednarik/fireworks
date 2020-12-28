@@ -1,4 +1,8 @@
 let firework;
+let fireworks;
+let fireworksDots;
+let explosions;
+let coordsArray;
 let dots;
 let explosion;
 let coords;
@@ -7,22 +11,23 @@ const SPEED = 2;
 const VLIMIT = 0;
 const CWIDTH = 1100;
 const CHEIGHT = 900;
+const STARTHEIGHT = CHEIGHT / 2;
 
 function setup() {
   createCanvas(CWIDTH, CHEIGHT, WEBGL);
   setFrameRate(30);
-  coords = createVector(0, CHEIGHT / 2);
-  firework = new Firework(coords.x, coords.y);
-  dots = createDots(11, 50, coords);
-  explosion = new Explosion(coords.x, coords.y, 255);
+
+  coordsArray = createInitCoords(10);
+  fireworks = createFireworks(coordsArray);
+  fireworksDots = createFireworksDots(coordsArray);
+  explosions = createFireworksExplosions(coordsArray);
+  coords = createVector(0, STARTHEIGHT);
 }
 
 function draw() {
-  background(220);
+  background("black");
   coords.y = coords.y - SPEED;
-  firework.display(coords.y, VLIMIT);
-  displayDots(dots, VLIMIT);
-  coords.y <= VLIMIT && explosion.display(VLIMIT, 5, 1, 4);
+  fire(coords.y, coordsArray);
 }
 
 function createDots(nDots, offSet, coords) {
@@ -40,6 +45,55 @@ function displayDots(dots, limitPosY) {
     dot.posY = dot.posY - SPEED;
     dot.display(dot.posY, limitPosY);
   });
+}
+
+function createInitCoords(noOfItemsToReturn) {
+  // yes, it may happen, that it will generate same x-coord number multiple times
+  // but that is low prob and whatever
+  let coords = [];
+  // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values
+  for (let i = 0; i < noOfItemsToReturn; i++) {
+    const min = Math.ceil(-CWIDTH / 2) + 50;
+    const max = Math.floor(CWIDTH / 2) - 50;
+    coords.push(
+      createVector(Math.floor(Math.random() * (max - min) + min), STARTHEIGHT)
+    );
+  }
+  return coords;
+}
+
+function createFireworks(coordsArray) {
+  let fireworks = [];
+  for (const coords of coordsArray) {
+    fireworks.push(new Firework(coords.x, coords.y));
+  }
+  return fireworks;
+}
+
+function createFireworksDots(coordsArray) {
+  let dots = [];
+  for (const coords of coordsArray) {
+    dots.push(createDots(11, 50, coords));
+  }
+  return dots;
+}
+
+function createFireworksExplosions(coordsArray) {
+  let explosions = [];
+  for (const coords of coordsArray) {
+    explosions.push(new Explosion(coords.x, coords.y, 255));
+  }
+  return explosions;
+}
+
+function fire(coordsY, coordsArray) {
+  const l = coordsArray.length;
+
+  for (let i = 0; i < l; i++) {
+    fireworks[i].display(coordsY, VLIMIT);
+    displayDots(fireworksDots[i], VLIMIT);
+    coordsY <= VLIMIT && explosions[i].display(VLIMIT, 5, 1, 4);
+  }
 }
 
 class Firework {
