@@ -13,7 +13,7 @@ function setup() {
   setFrameRate(30);
   coords = createVector(0, CHEIGHT / 2);
   firework = new Firework(coords.x, coords.y);
-  dots = createDots(11, 50);
+  dots = createDots(11, 50, coords);
   explosion = new Explosion(coords.x, coords.y, 255);
 }
 
@@ -25,7 +25,7 @@ function draw() {
   coords.y <= VLIMIT && explosion.display(VLIMIT, 5, 1, 4);
 }
 
-function createDots(nDots, offSet) {
+function createDots(nDots, offSet, coords) {
   let offset = offSet;
   let dots = [];
   for (let i = 0; i < nDots; i++) {
