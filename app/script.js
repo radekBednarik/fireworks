@@ -5,7 +5,7 @@ let coordsArray;
 let coords;
 let vlimits;
 
-const SPEED = 2;
+const SPEED = 3;
 const CWIDTH = 1100;
 const CHEIGHT = 900;
 const STARTHEIGHT = CHEIGHT / 2;
@@ -13,6 +13,7 @@ const COLOURS = [
   [255, 0, 0],
   [0, 0, 255],
   [0, 255, 0],
+  [0, 229, 228],
 ];
 
 function setup() {
@@ -31,6 +32,7 @@ function draw() {
   background("black");
   coords.y = coords.y - SPEED;
   fire(coords.y, coordsArray, vlimits);
+  reloadPage(coords.y);
 }
 
 function createDots(nDots, offSet, coords) {
@@ -52,7 +54,7 @@ function displayDots(dots, limitPosY) {
 
 function createInitCoords(noOfItemsToReturn) {
   // yes, it may happen, that it will generate same x-coord number multiple times
-  // but that is low prob and whatever
+  // but whatever
   let coords = [];
   // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values
   for (let i = 0; i < noOfItemsToReturn; i++) {
@@ -117,6 +119,12 @@ function getVerticalLimits(minExplosionDist, coordsArray) {
   return limits;
 }
 
+function reloadPage(coordsY) {
+  if (coordsY < -CHEIGHT) {
+    location.reload();
+  }
+}
+
 class Firework {
   constructor(posX, posY) {
     this.posX = posX;
@@ -156,7 +164,7 @@ class TailDot {
 
   display(newPosY, limitPosY) {
     if (newPosY > limitPosY) {
-      strokeWeight(5);
+      strokeWeight(7.5);
       stroke(color(this.colour[0], this.colour[1], this.colour[2]));
       point(this.posX, newPosY);
     }
@@ -180,7 +188,8 @@ class Explosion {
 
   display(newPosY, basicSpreadDist, spreadMod, alphaRed) {
     let c = color(this.colour[0], this.colour[1], this.colour[2], this.alpha);
-    stroke(c);
+    // stroke(c);
+    noStroke();
     fill(c);
     beginShape();
     this.coordinates.forEach((item) => {
