@@ -3,9 +3,9 @@ let fireworksDots;
 let explosions;
 let coordsArray;
 let coords;
+let vlimits;
 
 const SPEED = 2;
-const VLIMIT = 0;
 const CWIDTH = 1100;
 const CHEIGHT = 900;
 const STARTHEIGHT = CHEIGHT / 2;
@@ -24,12 +24,13 @@ function setup() {
   fireworksDots = createFireworksDots(coordsArray);
   explosions = createFireworksExplosions(coordsArray);
   coords = createVector(0, STARTHEIGHT);
+  vlimits = getVerticalLimits(50, coordsArray);
 }
 
 function draw() {
   background("black");
   coords.y = coords.y - SPEED;
-  fire(coords.y, coordsArray);
+  fire(coords.y, coordsArray, vlimits);
 }
 
 function createDots(nDots, offSet, coords) {
@@ -88,13 +89,13 @@ function createFireworksExplosions(coordsArray) {
   return explosions;
 }
 
-function fire(coordsY, coordsArray) {
+function fire(coordsY, coordsArray, vlimits) {
   const l = coordsArray.length;
 
   for (let i = 0; i < l; i++) {
-    fireworks[i].display(coordsY, VLIMIT);
-    displayDots(fireworksDots[i], VLIMIT);
-    coordsY <= VLIMIT && explosions[i].display(VLIMIT, 5, 1, 4);
+    fireworks[i].display(coordsY, vlimits[i]);
+    displayDots(fireworksDots[i], vlimits[i]);
+    coordsY <= vlimits[i] && explosions[i].display(vlimits[i], 5, 1, 4);
   }
 }
 
@@ -103,6 +104,17 @@ function selectRandomColour(colours) {
   const max = colours.length;
   const index = Math.floor(Math.random() * (max - min) + min);
   return colours[index];
+}
+
+function getVerticalLimits(minExplosionDist, coordsArray) {
+  let limits = [];
+  const min = STARTHEIGHT - minExplosionDist;
+  const max = -STARTHEIGHT + minExplosionDist;
+
+  for (let i = 0; i < coordsArray.length; i++) {
+    limits.push(Math.floor(Math.random() * (max - min) + min));
+  }
+  return limits;
 }
 
 class Firework {
