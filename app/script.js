@@ -1,6 +1,5 @@
 let fireworks;
 let fireworksDots;
-let explosions;
 let coordsArray;
 let coords;
 let vlimits;
@@ -23,7 +22,6 @@ function setup() {
   coordsArray = createInitCoords(10);
   fireworks = createFireworks(coordsArray);
   fireworksDots = createFireworksDots(coordsArray);
-  explosions = createFireworksExplosions(coordsArray);
   coords = createVector(0, STARTHEIGHT);
   vlimits = getVerticalLimits(50, coordsArray);
 }
@@ -70,7 +68,7 @@ function createInitCoords(noOfItemsToReturn) {
 function createFireworks(coordsArray) {
   let fireworks = [];
   for (const coords of coordsArray) {
-    fireworks.push(new Firework(coords.x, coords.y));
+    fireworks.push(new Firework(coords.x, coords.y, 255));
   }
   return fireworks;
 }
@@ -83,21 +81,13 @@ function createFireworksDots(coordsArray) {
   return dots;
 }
 
-function createFireworksExplosions(coordsArray) {
-  let explosions = [];
-  for (const coords of coordsArray) {
-    explosions.push(new Explosion(coords.x, coords.y, 255));
-  }
-  return explosions;
-}
-
 function fire(coordsY, coordsArray, vlimits) {
   const l = coordsArray.length;
 
   for (let i = 0; i < l; i++) {
     fireworks[i].display(coordsY, vlimits[i]);
     displayDots(fireworksDots[i], vlimits[i]);
-    coordsY <= vlimits[i] && explosions[i].display(vlimits[i], 5, 1, 4);
+    coordsY <= vlimits[i] && fireworks[i].explosion(vlimits[i], 5, 0.75, 4);
   }
 }
 
@@ -134,18 +124,19 @@ class GenericFirework {
 }
 
 class Firework extends GenericFirework {
-  constructor(posX, posY) {
+  constructor(posX, posY, alpha) {
     super(posX, posY);
     this.coordinates = [
       [-10, 10],
       [0, 35],
       [10, 10],
       [35, 0],
-      [10, -8],
+      [10, -10],
       [0, -35],
-      [-10, -8],
+      [-10, -10],
       [-35, 0],
     ];
+    this.alpha = alpha;
   }
 
   display(newPosY, limitPosY) {
@@ -158,6 +149,30 @@ class Firework extends GenericFirework {
       });
       endShape();
     }
+  }
+
+  explosion(newPosY, basicSpreadDist, spreadMod, alphaRed) {
+    let c = color(this.colour[0], this.colour[1], this.colour[2], this.alpha);
+    noStroke();
+    fill(c);
+    beginShape();
+    this.coordinates.forEach((item) => {
+      if (Math.abs(item[0]) === Math.abs(item[1])) {
+        item[0] < 0 && (item[0] = item[0] - basicSpreadDist * spreadMod);
+        item[0] > 0 && (item[0] = item[0] + basicSpreadDist * spreadMod);
+        item[1] < 0 && (item[1] = item[1] - basicSpreadDist * spreadMod);
+        item[1] > 0 && (item[1] = item[1] + basicSpreadDist * spreadMod);
+      } else {
+        item[0] > 0 && (item[0] = item[0] + basicSpreadDist);
+        item[0] < 0 && (item[0] = item[0] - basicSpreadDist);
+        item[1] < 0 && (item[1] = item[1] - basicSpreadDist);
+        item[1] > 0 && (item[1] = item[1] + basicSpreadDist);
+      }
+
+      vertex(this.posX + item[0], newPosY + item[1]);
+    });
+    endShape();
+    this.alpha > 0 ? (this.alpha = this.alpha - alphaRed) : (this.alpha = 0);
   }
 }
 
@@ -172,39 +187,5 @@ class TailDot extends GenericFirework {
       stroke(color(this.colour[0], this.colour[1], this.colour[2]));
       point(this.posX, newPosY);
     }
-  }
-}
-
-class Explosion extends GenericFirework {
-  constructor(posX, posY, alpha) {
-    super(posX, posY);
-    this.coordinates = [
-      [30, 0],
-      [0, -30],
-      [-30, 0],
-      [0, 30],
-      [30, 0],
-    ];
-    this.alpha = alpha;
-  }
-
-  display(newPosY, basicSpreadDist, spreadMod, alphaRed) {
-    let c = color(this.colour[0], this.colour[1], this.colour[2], this.alpha);
-    // stroke(c);
-    noStroke();
-    fill(c);
-    beginShape();
-    this.coordinates.forEach((item) => {
-      // update coords. need to account for neg/pos values
-      if (item.indexOf(0) != -1) {
-        item[0] < 0 && (item[0] = item[0] - basicSpreadDist * spreadMod);
-        item[0] > 0 && (item[0] = item[0] + basicSpreadDist * spreadMod);
-        item[1] < 0 && (item[1] = item[1] - basicSpreadDist * spreadMod);
-        item[1] > 0 && (item[1] = item[1] + basicSpreadDist * spreadMod);
-      }
-      vertex(this.posX + item[0], newPosY + item[1]);
-    });
-    endShape();
-    this.alpha > 0 ? (this.alpha = this.alpha - alphaRed) : (this.alpha = 0);
   }
 }
