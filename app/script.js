@@ -4,6 +4,7 @@ let coordsArray;
 let coords;
 let vlimits;
 
+const FIREWORKSCOUNT = 20;
 const SPEED = 3;
 const CWIDTH = 1100;
 const CHEIGHT = 900;
@@ -13,13 +14,15 @@ const COLOURS = [
   [0, 0, 255],
   [0, 255, 0],
   [0, 229, 228],
+  [255, 0, 255],
+  [255, 255, 0],
+  [255, 153, 51],
 ];
 
 function setup() {
   createCanvas(CWIDTH, CHEIGHT, WEBGL);
   setFrameRate(30);
-
-  coordsArray = createInitCoords(10);
+  coordsArray = createInitCoords(FIREWORKSCOUNT);
   fireworks = createFireworks(coordsArray);
   fireworksDots = createFireworksDots(coordsArray);
   coords = createVector(0, STARTHEIGHT);
@@ -168,7 +171,6 @@ class Firework extends GenericFirework {
         item[1] < 0 && (item[1] = item[1] - basicSpreadDist);
         item[1] > 0 && (item[1] = item[1] + basicSpreadDist);
       }
-
       vertex(this.posX + item[0], newPosY + item[1]);
     });
     endShape();
