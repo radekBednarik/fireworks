@@ -125,11 +125,17 @@ function reloadPage(coordsY) {
   }
 }
 
-class Firework {
+class GenericFirework {
   constructor(posX, posY) {
     this.posX = posX;
     this.posY = posY;
     this.colour = selectRandomColour(COLOURS);
+  }
+}
+
+class Firework extends GenericFirework {
+  constructor(posX, posY) {
+    super(posX, posY);
     this.coordinates = [
       [-10, 10],
       [0, 35],
@@ -155,11 +161,9 @@ class Firework {
   }
 }
 
-class TailDot {
+class TailDot extends GenericFirework {
   constructor(posX, posY) {
-    this.posX = posX;
-    this.posY = posY;
-    this.colour = selectRandomColour(COLOURS);
+    super(posX, posY);
   }
 
   display(newPosY, limitPosY) {
@@ -171,10 +175,9 @@ class TailDot {
   }
 }
 
-class Explosion {
+class Explosion extends GenericFirework {
   constructor(posX, posY, alpha) {
-    this.posX = posX;
-    this.posY = posY;
+    super(posX, posY);
     this.coordinates = [
       [30, 0],
       [0, -30],
@@ -183,7 +186,6 @@ class Explosion {
       [30, 0],
     ];
     this.alpha = alpha;
-    this.colour = selectRandomColour(COLOURS);
   }
 
   display(newPosY, basicSpreadDist, spreadMod, alphaRed) {
