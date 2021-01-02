@@ -1,3 +1,5 @@
+"use strict";
+
 let fireworks;
 let fireworksDots;
 let coordsArray;
@@ -5,7 +7,7 @@ let coords;
 let vlimits;
 
 const FIREWORKSCOUNT = 20;
-const SPEED = 3;
+const SPEED = 5;
 const CWIDTH = 1100;
 const CHEIGHT = 900;
 const STARTHEIGHT = CHEIGHT / 2;
@@ -40,7 +42,7 @@ function createDots(nDots, offSet, coords) {
   let offset = offSet;
   let dots = [];
   for (let i = 0; i < nDots; i++) {
-    dots.push(new TailDot(coords.x, coords.y + offset));
+    dots.push(new TailDot(coords.x, coords.y + offset, 10));
     offset += offSet;
   }
   return dots;
@@ -179,15 +181,32 @@ class Firework extends GenericFirework {
 }
 
 class TailDot extends GenericFirework {
-  constructor(posX, posY) {
+  constructor(posX, posY, range) {
     super(posX, posY);
+    this.range = range;
+    this.rangeArr = this._getShimmerRange();
+  }
+
+  _getShimmerRange() {
+    let rangeArr = [];
+    for (let i = -this.range; i <= this.range; i++) {
+      rangeArr.push(i);
+    }
+    return rangeArr;
+  }
+
+  _shimmer() {
+    const min = Math.ceil(this.rangeArr[0]);
+    const max = Math.ceil(this.rangeArr.slice(-1));
+    const offset = Math.floor(Math.random() * (max - min) + min);
+    return offset;
   }
 
   display(newPosY, limitPosY) {
     if (newPosY > limitPosY) {
-      strokeWeight(7.5);
+      strokeWeight(5.5);
       stroke(color(this.colour[0], this.colour[1], this.colour[2]));
-      point(this.posX, newPosY);
+      point(this.posX + this._shimmer(), newPosY);
     }
   }
 }
