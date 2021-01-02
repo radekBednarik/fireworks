@@ -157,9 +157,8 @@ class Firework extends GenericFirework {
   }
 
   explosion(newPosY, basicSpreadDist, spreadMod, alphaRed) {
-    let c = color(this.colour[0], this.colour[1], this.colour[2], this.alpha);
     noStroke();
-    fill(c);
+    fill(color(this.colour[0], this.colour[1], this.colour[2], this.alpha));
     beginShape();
     this.coordinates.forEach((item) => {
       if (Math.abs(item[0]) === Math.abs(item[1])) {
