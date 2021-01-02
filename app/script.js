@@ -203,7 +203,7 @@ class TailDot extends GenericFirework {
 
   display(newPosY, limitPosY) {
     if (newPosY > limitPosY) {
-      strokeWeight(5.5);
+      strokeWeight(3.5);
       stroke(color(this.colour[0], this.colour[1], this.colour[2]));
       point(this.posX + this._shimmer(), newPosY + this._shimmer());
     }
