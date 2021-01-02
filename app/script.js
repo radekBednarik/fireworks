@@ -172,7 +172,9 @@ class Firework extends GenericFirework {
         item[1] < 0 && (item[1] = item[1] - basicSpreadDist);
         item[1] > 0 && (item[1] = item[1] + basicSpreadDist);
       }
-      vertex(this.posX + item[0], newPosY + item[1]);
+      // we want the explosion object to slow down the upward movement
+      // it is not physics, ofc :D
+      vertex(this.posX + item[0] / 2, newPosY + item[1] / 2);
     });
     endShape();
     this.alpha > 0 ? (this.alpha = this.alpha - alphaRed) : (this.alpha = 0);
