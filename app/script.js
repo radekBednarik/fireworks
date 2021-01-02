@@ -42,7 +42,7 @@ function createDots(nDots, offSet, coords) {
   let offset = offSet;
   let dots = [];
   for (let i = 0; i < nDots; i++) {
-    dots.push(new TailDot(coords.x, coords.y + offset, 10));
+    dots.push(new TailDot(coords.x, coords.y + offset, 20));
     offset += offSet;
   }
   return dots;
